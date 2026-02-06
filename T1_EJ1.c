@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define DESTINOS 4
 #define VUELOS 3
@@ -115,6 +116,8 @@ int main() {
             printf("Pedido %d - Pasajes solicitados: %d\n", *(pPedidosR + i),*(pCantidadesR + i));
         }
     }
+
+    system("pause");
 
     return 0;
 }
