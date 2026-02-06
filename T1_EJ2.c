@@ -88,86 +88,89 @@ int main() {
         } while ((p + i)->precio <= 0);
     }
 
-    int opcion;
-    do {
-        printf("\n------ MENU ------\n");
-        printf("1. Venta de producto\n");
-        printf("2. Reabastecer producto\n");
-        printf("3. Actualizar precio\n");
-        printf("4. Informar producto\n");
-        printf("0. Salir\n");
-        printf("Opcion: ");
-        opcion = leerEntero();
+int opcion;
+do {
+    printf("\n------ MENU ------\n");
+    printf("1. Venta de producto\n");
+    printf("2. Reabastecer producto\n");
+    printf("3. Actualizar precio\n");
+    printf("4. Informar producto\n");
+    printf("0. Salir\n");
+    printf("Opcion: ");
+    opcion = leerEntero();
 
-        if (opcion == 0) break;
+    if (opcion == 0) break;
 
-        int clave, cantidad;
-        float porcentaje;
-        int encontrado = 0;
+    if (opcion < 1 || opcion > 4) {
+        printf("Opcion invalida.\n");
+        continue;   
+    }
 
-        printf("Clave del producto: ");
-        clave = leerEntero();
+    int clave, cantidad;
+    float porcentaje;
+    int encontrado = 0;
 
-        for (int i = 0; i < n; i++) {
-            if ((p + i)->clave == clave) {
-                encontrado = 1;
+    printf("Clave del producto: ");
+    clave = leerEntero();
 
-                switch (opcion) {
+    for (int i = 0; i < n; i++) {
+        if ((p + i)->clave == clave) {
+            encontrado = 1;
 
-                case 1: 
-                    do {
-                        printf("Cantidad vendida: ");
-                        cantidad = leerEntero();
-                    } while (cantidad <= 0);
+            switch (opcion) {
 
-                    if ((p + i)->existencia - cantidad < 0) {
-                        printf("No hay suficiente existencia.\n");
-                    } else {
-                        (p + i)->existencia -= cantidad;
-                        if ((p + i)->existencia < (p + i)->minimo) {
-                            printf("ADVERTENCIA: existencia por debajo del minimo.\n");
-                        }
+            case 1:
+                do {
+                    printf("Cantidad vendida: ");
+                    cantidad = leerEntero();
+                } while (cantidad <= 0);
+
+                if ((p + i)->existencia - cantidad < 0) {
+                    printf("No hay suficiente existencia.\n");
+                } else {
+                    (p + i)->existencia -= cantidad;
+                    if ((p + i)->existencia < (p + i)->minimo) {
+                        printf("ADVERTENCIA: existencia por debajo del minimo.\n");
                     }
-                    break;
-
-                case 2: 
-                    do {
-                        printf("Cantidad comprada: ");
-                        cantidad = leerEntero();
-                    } while (cantidad <= 0);
-
-                    (p + i)->existencia += cantidad;
-                    break;
-
-                case 3: 
-                    do {
-                        printf("Porcentaje de aumento: ");
-                        porcentaje = leerFloat();
-                    } while (porcentaje <= 0);
-
-                    (p + i)->precio += (p + i)->precio * (porcentaje / 100);
-                    break;
-
-                case 4: 
-                    printf("\nCLAVE: %d\n", (p + i)->clave);
-                    printf("Descripcion: %s\n", (p + i)->descripcion);
-                    printf("Existencia: %d\n", (p + i)->existencia);
-                    printf("Minimo: %d\n", (p + i)->minimo);
-                    printf("Precio: %.2f\n", (p + i)->precio);
-                    break;
-
-                default:
-                    printf("Opcion invalida.\n");
                 }
                 break;
+
+            case 2:
+                do {
+                    printf("Cantidad comprada: ");
+                    cantidad = leerEntero();
+                } while (cantidad <= 0);
+
+                (p + i)->existencia += cantidad;
+                break;
+
+            case 3:
+                do {
+                    printf("Porcentaje de aumento: ");
+                    porcentaje = leerFloat();
+                } while (porcentaje <= 0);
+
+                (p + i)->precio += (p + i)->precio * (porcentaje / 100);
+                break;
+
+            case 4:
+                printf("\nCLAVE: %d\n", (p + i)->clave);
+                printf("Descripcion: %s\n", (p + i)->descripcion);
+                printf("Existencia: %d\n", (p + i)->existencia);
+                printf("Minimo: %d\n", (p + i)->minimo);
+                printf("Precio: %.2f\n", (p + i)->precio);
+                break;
             }
+            break;
         }
+    }
 
-        if (!encontrado) {
-            printf("Producto no encontrado.\n");
-        }
+    if (!encontrado) {
+        printf("Producto no encontrado.\n");
+    }
 
-    } while (1);
+} while (1);
+
 
     return 0;
 }
