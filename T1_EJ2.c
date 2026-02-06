@@ -106,7 +106,7 @@ do {
 
     if (opcion < 1 || opcion > 4) {
         printf("Opcion invalida.\n");
-        printf("\nPresione ENTER para continuar");
+        printf("\nPresione ENTER para continuar...");
         getchar();          
         continue;
     }

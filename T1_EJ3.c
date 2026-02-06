@@ -18,6 +18,8 @@ void normalizar(char *cad);
 void prom_mayor_9(Alumno *ap, int n);
 void prom_9_sems(Alumno *ap, int n);
 void mejor_prom_comp(Alumno *ap, int n);
+int matricula_repetida(Alumno *ap, int n, long int matr);
+int leer_calif(float *valor);
 
 
 int main(){
@@ -43,7 +45,7 @@ int main(){
                 break;
             case 2:
                 if (n<1){
-                    printf("\n\tNo existen datos de alumnos\n\n");
+                    printf("\nNo existen datos de alumnos\n\n");
                     system("pause");
                     break;
                 }
@@ -53,7 +55,7 @@ int main(){
                 break;
             case 3:
                 if (n<1){
-                    printf("\n\tNo existen datos de alumnos\n\n");
+                    printf("\nNo existen datos de alumnos\n\n");
                     system("pause");
                     break;
                 }
@@ -63,7 +65,7 @@ int main(){
                 break;
             case 4:
                 if (n<1){
-                    printf("\n\tNo existen datos de alumnos\n\n");
+                    printf("\nNo existen datos de alumnos\n\n");
                     system("pause");
                     break;
                 }
@@ -75,7 +77,7 @@ int main(){
                 printf("Saliendo del programa...");
                 break;
             default:
-                printf("\n\tOpcion no valida, intente de nuevo\n\n");
+                printf("\nOpcion no valida, intente de nuevo\n\n");
                 system("pause");
                 break;
         }
@@ -93,14 +95,22 @@ int insertar_datos(Alumno *ap){
         printf("----INSERTAR DATOS DE ALUMNOS----\n\n"); 
         do
         {
-            printf("\nIngrese la matricula del alumno %d: ", cont+1);
+            printf("\n\tIngrese la matricula del alumno %d: ", cont+1);
             fgets(temp,sizeof(temp),stdin);
-            ap->matr=atoi(temp);
+            ap->matr=atol(temp);
+
+            if(ap->matr<1){
+                printf("Matricula invalida\n");
+            }
+            else if(matricula_repetida(ap - cont, cont, ap->matr)){
+                printf("Matricula ya registrada, intente otra\n");
+                ap->matr=-1;
+            }
         } while (ap->matr<1);
         
         do
         {
-            printf("\nIngrese nombre del alumno %d: ", cont+1);
+            printf("\n\tIngrese nombre del alumno %d: ", cont+1);
             fgets(ap->nom, sizeof(ap->nom), stdin);
             ap->nom[strcspn(ap->nom, "\n")] = '\0';
         } while (strlen(ap->nom)<1);
@@ -108,20 +118,34 @@ int insertar_datos(Alumno *ap){
         
 
         do{
-            printf("\nIngrese el numero de semestres: ");
+            printf("\n\tIngrese el numero de semestres: ");
             fgets(temp, sizeof(temp), stdin);
-            ap->sems=atoi(temp);
+            ap->sems=atoi(temp); 
+
+            if(ap->sems<1 || ap->sems>10){
+                printf("\nNumero de semestres invalido. Debe estar entre 1 y 10.\n");
+            }
+
         } while (ap->sems<1 || ap->sems>10);
 
         for(i=0;i<ap->sems;i++){
             do{
-                printf("\nIngrese la calificacion %d: ", i+1);
-                fgets(temp,sizeof(temp),stdin);
-                ap->califs[i]=atof(temp);
-            }while(ap->califs[i]<0 || ap->califs[i]>100);
+                printf("\n\tIngrese la calificacion %d: ", i+1);
+
+                if(!leer_calif(&ap->califs[i])){
+                    printf("\nEntrada invalida.\n");
+                    ap->califs[i]=-1;
+                    continue;
+                }
+
+                if(ap->califs[i] < 0 || ap->califs[i] > 100){
+                    printf("\nLa calificacion debe estar entre 0 y 100\n");
+                }
+
+            }while(ap->califs[i] < 0 || ap->califs[i] > 100);
         }
 
-        printf("\nIngrese la carrera alumno %d: ", cont+1);
+        printf("\n\tIngrese la carrera alumno %d: ", cont+1);
         fgets(ap->carr, sizeof(ap->carr), stdin);
         normalizar(ap->carr);
 
@@ -133,6 +157,11 @@ int insertar_datos(Alumno *ap){
             printf("\n\n\t Desea agregar otro alumno [1-Si/2-No]: ");
             fgets(temp,sizeof(temp),stdin);
             op=atoi(temp);
+            if (op!=1 && op!=2)
+            {
+                printf("\nOpcion no valida, intente de nuevo\n");
+            }
+            
         } while (op!=1 && op!=2);
 
     } while (op==1);
@@ -159,7 +188,7 @@ void prom_mayor_9(Alumno *ap, int n){
         ap++;
     }
     if(cont==0){
-        printf("\n\tNo hay alumnos con promedio mayor a 9\n");
+        printf("\n\tNo hay alumnos con promedio mayor a 9\n\n");
     }
     system("pause");
 }
@@ -185,7 +214,7 @@ void prom_9_sems(Alumno *ap, int n){
         ap++;
     }
     if(cont==0){
-        printf("\n\tNo hay alumnos de Economia con promedio mayor a 9 en cada semestre\n");
+        printf("\n\tNo hay alumnos de Economia con promedio mayor a 9 en cada semestre\n\n");
     }
     system("pause");
 }
@@ -218,7 +247,7 @@ void mejor_prom_comp(Alumno *ap, int n){
         printf("Nombre: %s\n", mejor->nom);
         printf("Matricula: %ld\n", mejor->matr);
     } else {
-        printf("No hay alumnos de Ingenieria en Computacion\n");
+        printf("\n\tNo hay alumnos de Ingenieria en Computacion\n\n");
     }
     system("pause");
 }
@@ -239,4 +268,29 @@ void normalizar(char *cad){
     aux[j]='\0';
 
     strcpy(cad,aux);
+}
+
+int matricula_repetida(Alumno *ap, int n, long int matr){
+    int i;
+    for(i=0;i<n;i++){
+        if(ap[i].matr==matr){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int leer_calif(float *valor){
+    char buffer[' '];
+    char *final;
+
+    fgets(buffer, sizeof(buffer), stdin);
+    *valor = strtof(buffer, &final);
+
+    while(*final==' ' || *final=='\t') final++;
+
+    if(*final!='\n'&&*final!= '\0'){
+        return 0;  
+    }
+    return 1;
 }
