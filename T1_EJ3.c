@@ -1,184 +1,242 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <stdlib.h> 
+#include <ctype.h>
 
-#define MAX 50
-#define DESC 50
+struct alumno{
+    char nom[' '];
+    long int matr;
+    int sems;
+    float califs[' '];
+    char carr[' '];
+};
 
-typedef struct {
-    int clave;
-    char descripcion[DESC];
-    int existencia;
-    int minimo;
-    float precio;
-} Producto;
+typedef struct alumno Alumno;
 
-void limpiarBuffer() {
-    while (getchar() != '\n');
-}
+int insertar_datos(Alumno *ap);
+void normalizar(char *cad);
+void prom_mayor_9(Alumno *ap, int n);
+void prom_9_sems(Alumno *ap, int n);
+void mejor_prom_comp(Alumno *ap, int n);
 
-int leerEntero() {
-    int x;
-    while (scanf("%d", &x) != 1) {
-        printf("Error: Ingrese un numero entero valido: ");
-        limpiarBuffer();
-    }
-    limpiarBuffer();
-    return x;
-}
 
-float leerFloat() {
-    float x;
-    while (scanf("%f", &x) != 1) {
-        printf("Error: Ingrese un numero valido: ");
-        limpiarBuffer();
-    }
-    limpiarBuffer();
-    return x;
-}
+int main(){
+    Alumno alums[' '],*ap;
+    int op,n=0;
+    char aux[' '];    
 
-int main() {
-    Producto productos[MAX];
-    Producto *p = productos;
+    do{
+        system("cls");
+        printf("----MENU PRINCIPAL----\n\n");
+        printf("1. Insertar datos de alumnos\n");
+        printf("2. Alumnos con promedio general mayor a 9\n");
+        printf("3. Alumnos de Economia con promedio mayor a 9 en cada semestre\n");
+        printf("4. Mejor promedio de Ingenieria en Computacion\n");
+        printf("5. Salir\n\n");
+        printf("\tIngrese una opcion: ");
+        fgets(aux,sizeof(aux),stdin);
+        op=atoi(aux);
 
-    int n;
-
-    do {
-        printf("Cantidad de productos: ");
-        n = leerEntero();
-    } while (n <= 0 || n > MAX);
-
-    for (int i = 0; i < n; i++) {
-        int repetido;
-
-        do {
-            repetido = 0;
-            printf("\nClave del producto: ");
-            (p + i)->clave = leerEntero();
-
-            if ((p + i)->clave <= 0) {
-                repetido = 1;
-            } else {
-                for (int j = 0; j < i; j++) {
-                    if ((p + j)->clave == (p + i)->clave) {
-                        repetido = 1;
-                        printf("Error: clave repetida.\n");
-                        break;
-                    }
-                }
-            }
-        } while (repetido);
-
-        printf("Descripcion: ");
-        fgets((p + i)->descripcion, DESC, stdin);
-        (p + i)->descripcion[strcspn((p + i)->descripcion, "\n")] = '\0';
-
-        do {
-            printf("Existencia: ");
-            (p + i)->existencia = leerEntero();
-        } while ((p + i)->existencia < 0);
-
-        do {
-            printf("Minimo a mantener: ");
-            (p + i)->minimo = leerEntero();
-        } while ((p + i)->minimo < 0);
-
-        do {
-            printf("Precio unitario: ");
-            (p + i)->precio = leerFloat();
-        } while ((p + i)->precio <= 0);
-    }
-
-int opcion;
-do {
-    system("cls");   
-
-    printf("\n------ MENU ------\n");
-    printf("1. Venta de producto\n");
-    printf("2. Reabastecer producto\n");
-    printf("3. Actualizar precio\n");
-    printf("4. Informar producto\n");
-    printf("0. Salir\n");
-    printf("Opcion: ");
-    opcion = leerEntero();
-
-    if (opcion == 0) break;
-
-    if (opcion < 1 || opcion > 4) {
-        printf("Opcion invalida.\n");
-        printf("\nPresione ENTER para continuar...");
-        getchar();          
-        continue;
-    }
-
-    int clave, cantidad;
-    float porcentaje;
-    int encontrado = 0;
-
-    printf("Clave del producto: ");
-    clave = leerEntero();
-
-    for (int i = 0; i < n; i++) {
-        if ((p + i)->clave == clave) {
-            encontrado = 1;
-
-            switch (opcion) {
-
+        switch(op){
             case 1:
-                do {
-                    printf("Cantidad vendida: ");
-                    cantidad = leerEntero();
-                } while (cantidad <= 0);
-
-                if ((p + i)->existencia - cantidad < 0) {
-                    printf("No hay suficiente existencia.\n");
-                } else {
-                    (p + i)->existencia -= cantidad;
-                    if ((p + i)->existencia < (p + i)->minimo) {
-                        printf("ADVERTENCIA: existencia por debajo del minimo.\n");
-                    }
+                n=insertar_datos(&alums[0]);
+                break;
+            case 2:
+                if (n<1){
+                    printf("\n\tNo existen datos de alumnos\n\n");
+                    system("pause");
+                    break;
+                }
+                else{
+                    prom_mayor_9(&alums[0],n);
                 }
                 break;
-
-            case 2:
-                do {
-                    printf("Cantidad comprada: ");
-                    cantidad = leerEntero();
-                } while (cantidad <= 0);
-
-                (p + i)->existencia += cantidad;
-                break;
-
             case 3:
-                do {
-                    printf("Porcentaje de aumento: ");
-                    porcentaje = leerFloat();
-                } while (porcentaje <= 0);
-
-                (p + i)->precio += (p + i)->precio * (porcentaje / 100);
+                if (n<1){
+                    printf("\n\tNo existen datos de alumnos\n\n");
+                    system("pause");
+                    break;
+                }
+                else{
+                    prom_9_sems(&alums[0],n);
+                }
                 break;
-
             case 4:
-                printf("\nCLAVE: %d\n", (p + i)->clave);
-                printf("Descripcion: %s\n", (p + i)->descripcion);
-                printf("Existencia: %d\n", (p + i)->existencia);
-                printf("Minimo: %d\n", (p + i)->minimo);
-                printf("Precio: %.2f\n", (p + i)->precio);
+                if (n<1){
+                    printf("\n\tNo existen datos de alumnos\n\n");
+                    system("pause");
+                    break;
+                }
+                else{
+                    mejor_prom_comp(&alums[0],n);
+                }
                 break;
-            }
-
-            printf("\nPresione ENTER para volver al menu");
-            getchar();
-            break;
+            case 5:
+                printf("Saliendo del programa...");
+                break;
+            default:
+                printf("\n\tOpcion no valida, intente de nuevo\n\n");
+                system("pause");
+                break;
         }
-    }
 
-    if (!encontrado) {
-        printf("Producto no encontrado.\n");
-        printf("\nPresione ENTER para continuar");
-        getchar();
-    }
+    }while(op!=5);
+}
 
-} while (1);
-    return 0;
+int insertar_datos(Alumno *ap){
+    int cont=0,i,op;
+    char temp[' '];
+    do
+    {       
+
+        system("cls");
+        printf("----INSERTAR DATOS DE ALUMNOS----\n\n"); 
+        do
+        {
+            printf("\nIngrese la matricula del alumno %d: ", cont+1);
+            fgets(temp,sizeof(temp),stdin);
+            ap->matr=atoi(temp);
+        } while (ap->matr<1);
+        
+        do
+        {
+            printf("\nIngrese nombre del alumno %d: ", cont+1);
+            fgets(ap->nom, sizeof(ap->nom), stdin);
+            ap->nom[strcspn(ap->nom, "\n")] = '\0';
+        } while (strlen(ap->nom)<1);
+        
+        
+
+        do{
+            printf("\nIngrese el numero de semestres: ");
+            fgets(temp, sizeof(temp), stdin);
+            ap->sems=atoi(temp);
+        } while (ap->sems<1 || ap->sems>10);
+
+        for(i=0;i<ap->sems;i++){
+            do{
+                printf("\nIngrese la calificacion %d: ", i+1);
+                fgets(temp,sizeof(temp),stdin);
+                ap->califs[i]=atof(temp);
+            }while(ap->califs[i]<0 || ap->califs[i]>100);
+        }
+
+        printf("\nIngrese la carrera alumno %d: ", cont+1);
+        fgets(ap->carr, sizeof(ap->carr), stdin);
+        normalizar(ap->carr);
+
+        cont++;
+        ap++;
+        
+        do
+        {
+            printf("\n\n\t Desea agregar otro alumno [1-Si/2-No]: ");
+            fgets(temp,sizeof(temp),stdin);
+            op=atoi(temp);
+        } while (op!=1 && op!=2);
+
+    } while (op==1);
+    
+    return cont;
+}
+void prom_mayor_9(Alumno *ap, int n){
+    int i,j,cont=0;
+    float prom,suma;
+    system("cls");
+    printf("----ALUMNOS CON PROMEDIO GENERAL MAYOR A 9----\n\n");
+    for(i=0;i<n;i++){
+        suma=0;
+        for(j=0;j<ap->sems;j++){
+            suma+=ap->califs[j];
+        }
+        prom=suma/ap->sems;        
+        if (prom>90){
+            cont++;
+            printf("Alumno %d\n", cont);
+            printf("\tNombre: %s\n", ap->nom);
+            printf("\tMatricula: %ld\n", ap->matr);
+        }
+        ap++;
+    }
+    if(cont==0){
+        printf("\n\tNo hay alumnos con promedio mayor a 9\n");
+    }
+    system("pause");
+}
+
+
+void prom_9_sems(Alumno *ap, int n){
+    int i,j,cont=0,contsems;
+    system("cls");
+    printf("----ALUMNOS CON PROMEDIO MAYOR A 9 EN CADA SEMESTRE----\n\n");
+    for(i=0;i<n;i++){
+        contsems=0;
+        for(j=0;j<ap->sems;j++){
+            if(ap->califs[j]>90){
+                contsems++;
+            }
+        }       
+        if (strcmp(ap->carr,"economia")==0 && contsems==ap->sems){
+            cont++;
+            printf("Alumno %d\n", cont);
+            printf("\tNombre: %s\n", ap->nom);
+            printf("\tMatricula: %ld\n", ap->matr);
+        }
+        ap++;
+    }
+    if(cont==0){
+        printf("\n\tNo hay alumnos de Economia con promedio mayor a 9 en cada semestre\n");
+    }
+    system("pause");
+}
+
+void mejor_prom_comp(Alumno *ap, int n){
+    int i,j,encontrado=0;
+    float suma,prom,max_prom=-1;
+    Alumno *mejor=NULL;
+
+    for(i=0;i<n;i++){
+        if(strcmp(ap->carr,"ingenieria en computacion")==0){
+            suma=0;
+            for(j=0;j<ap->sems;j++){
+                suma+=ap->califs[j];
+            }
+            prom=suma/ap->sems;
+
+            if(prom>max_prom){
+                max_prom=prom;
+                mejor=ap;
+                encontrado=1;
+            }
+        }
+        ap++;
+    }
+    
+    system("cls");
+    if(encontrado){
+        printf("----MEJOR PROMEDIO DE INGENIERIA EN COMPUTACION----\n\n");
+        printf("Nombre: %s\n", mejor->nom);
+        printf("Matricula: %ld\n", mejor->matr);
+    } else {
+        printf("No hay alumnos de Ingenieria en Computacion\n");
+    }
+    system("pause");
+}
+
+void normalizar(char *cad){
+    int i=0,j=0;
+    char aux[' '],c;
+
+    cad[strcspn(cad, "\n")]='\0';
+
+    while(cad[i]!='\0'){
+        c=cad[i];
+
+        aux[j]=tolower(c);
+        i++;
+        j++;
+    }
+    aux[j]='\0';
+
+    strcpy(cad,aux);
 }

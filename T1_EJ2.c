@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h> 
 
 #define MAX 50
 #define DESC 50
@@ -90,6 +91,8 @@ int main() {
 
 int opcion;
 do {
+    system("cls");   
+
     printf("\n------ MENU ------\n");
     printf("1. Venta de producto\n");
     printf("2. Reabastecer producto\n");
@@ -103,7 +106,9 @@ do {
 
     if (opcion < 1 || opcion > 4) {
         printf("Opcion invalida.\n");
-        continue;   
+        printf("\nPresione ENTER para continuar");
+        getchar();          
+        continue;
     }
 
     int clave, cantidad;
@@ -161,16 +166,19 @@ do {
                 printf("Precio: %.2f\n", (p + i)->precio);
                 break;
             }
+
+            printf("\nPresione ENTER para volver al menu");
+            getchar();
             break;
         }
     }
 
     if (!encontrado) {
         printf("Producto no encontrado.\n");
+        printf("\nPresione ENTER para continuar");
+        getchar();
     }
 
 } while (1);
-
-
     return 0;
 }
