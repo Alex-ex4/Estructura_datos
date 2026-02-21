@@ -30,6 +30,9 @@ void printlista(NODOSIG);
 /*funcion del menu de opciones*/
 void instrucciones(void);
 
+/*funcion para determinar si la lista esta vacia, recibe por valor el inicio de la lista*/
+int isempty(NODOSIG);
+
 int main()
 {
  NODOSIG lista = NULL;
