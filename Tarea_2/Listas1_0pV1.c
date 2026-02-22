@@ -19,6 +19,9 @@ char borrar_frente(NODOSIG *);
 char borrar_final(NODOSIG *);
 char borrar_medio(NODOSIG *, char);
 
+void ordenar_ascendente(NODOSIG);
+void ordenar_descendente(NODOSIG);
+
 void printlista(NODOSIG);
 
 void instrucciones(void);
@@ -109,6 +112,7 @@ int main()
 					else
 						printf("%c no existe \n\n",ele);
 				  }
+				
 				else
 				  {
 					printf("Lista esta vacia\n\n");
@@ -118,12 +122,36 @@ int main()
 				  }
 				getch();
 				break;
-		 }
-	 }while (op != 7);
-	system("cls");
-	printf("\n\n\n\n\n\n\t\t\t\t F I N\n");
-	getch();
- return 0;
+
+			case 7:
+				if (!isempty(lista))
+				{
+					ordenar_ascendente(lista);
+					printf("\nLista ordenada ascendente\n");
+					printlista(lista);
+				}
+				else
+					printf("\nNo se puede ordenar, la lista esta vacia\n");
+				getch();
+				break;
+
+			case 8:
+				if (!isempty(lista))
+				{
+					ordenar_descendente(lista);
+					printf("\nLista ordenada descendente\n");
+					printlista(lista);
+				}
+				else
+					printf("\nNo se puede ordenar, la lista esta vacia\n");
+				getch();
+				break;
+					}
+				}while (op != 9);
+				system("cls");
+				printf("\n\n\n\n\n\n\t\t\t\t F I N\n");
+				getch();
+ 			return 0;
 }
 
 
@@ -137,7 +165,10 @@ void instrucciones()
 	"   \t\t 4 eliminar frente\n"
 	"   \t\t 5 eliminar final\n"
 	"   \t\t 6 eliminar en medio\n"
-	"   \t\t 7 salir\n");
+	"   \t\t 7 ordenar ascendente\n"
+	"   \t\t 8 ordenar descendente\n"
+	"   \t\t 9 salir\n"
+	);
 }
 
 void insertar_frente(NODOSIG *lista, char valor)
@@ -282,6 +313,44 @@ char borrar_medio(NODOSIG *lista, char valor)
 		return(valor);
 	  }
 	return '\0';
+}
+
+void ordenar_ascendente(NODOSIG lista)
+{
+    NODOSIG actual, siguiente;
+    char temp;
+
+    for (actual = lista; actual != NULL; actual = actual->siguiente)
+    {
+        for (siguiente = actual->siguiente; siguiente != NULL; siguiente = siguiente->siguiente)
+        {
+            if (actual->dato > siguiente->dato)
+            {
+                temp = actual->dato;
+                actual->dato = siguiente->dato;
+                siguiente->dato = temp;
+            }
+        }
+    }
+}
+
+void ordenar_descendente(NODOSIG lista)
+{
+    NODOSIG actual, siguiente;
+    char temp;
+
+    for (actual = lista; actual != NULL; actual = actual->siguiente)
+    {
+        for (siguiente = actual->siguiente; siguiente != NULL; siguiente = siguiente->siguiente)
+        {
+            if (actual->dato < siguiente->dato)
+            {
+                temp = actual->dato;
+                actual->dato = siguiente->dato;
+                siguiente->dato = temp;
+            }
+        }
+    }
 }
 
 
