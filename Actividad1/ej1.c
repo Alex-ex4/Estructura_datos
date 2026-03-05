@@ -22,7 +22,6 @@ int leerEntero() {
     return x;
 }
 
-/* Insertar al final */
 void insertarFinal(Nodo **inicio, Nodo **fin, int valor) {
     Nodo *nuevo = (Nodo*) malloc(sizeof(Nodo));
 
@@ -43,7 +42,6 @@ void insertarFinal(Nodo **inicio, Nodo **fin, int valor) {
     }
 }
 
-/* Mostrar lista */
 void mostrarLista(Nodo *inicio) {
     if (inicio == NULL) {
         printf("La lista esta vacia.\n");
@@ -58,7 +56,6 @@ void mostrarLista(Nodo *inicio) {
     printf("NULL\n");
 }
 
-/* Eliminar nodos mayores a un valor */
 void eliminarMayores(Nodo **inicio, Nodo **fin, int limite) {
 
     Nodo *actual = *inicio;
@@ -70,7 +67,7 @@ void eliminarMayores(Nodo **inicio, Nodo **fin, int limite) {
 
             Nodo *temp = actual;
 
-            if (anterior == NULL) { // es el primero
+            if (anterior == NULL) { 
                 *inicio = actual->sig;
                 actual = *inicio;
             } else {
@@ -93,7 +90,6 @@ void eliminarMayores(Nodo **inicio, Nodo **fin, int limite) {
     printf("Eliminacion completada.\n");
 }
 
-/* Liberar memoria al final */
 void liberarLista(Nodo **inicio) {
     Nodo *actual = *inicio;
 
